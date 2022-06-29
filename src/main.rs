@@ -5,16 +5,19 @@
 
 use alloc::alloc::Layout;
 use alloc::format;
+use core::fmt::Write;
 use core::panic;
 use core::panic::PanicInfo;
 use uefi::proto::console::gop::{GraphicsOutput, PixelFormat};
+use uefi::proto::console::text::ScanCode;
 
-use uefi::{prelude::*, CStr16};
+use uefi::{prelude::*, CStr16, Char16};
 
 extern crate alloc;
 
 #[entry]
 fn main(handle: Handle, mut system_table: SystemTable<Boot>) -> Status {
+    use uefi::proto::console::text::Key;
     unsafe {
         uefi::alloc::init(system_table.boot_services());
     };
@@ -23,36 +26,19 @@ fn main(handle: Handle, mut system_table: SystemTable<Boot>) -> Status {
     system_table.stdout().clear().unwrap();
     system_table.stdout().enable_cursor(true).unwrap();
 
-    let mut buf = [0; 255];
-
-    let mut fb = match system_table
-        .boot_services()
-        .locate_protocol::<GraphicsOutput>()
-    {
-        Err(e) => {
-            system_table
-                .stdout()
-                .output_string(
-                    &CStr16::from_str_with_buf(
-                        &format!("EfiPtorocol ERROR {:?}", e.status()),
-                        &mut buf,
-                    )
+    loop {
+        system_table.stdin().wait_for_key_event();
+        if let Ok(Some(key)) = system_table.stdin().read_key() {
+            match key {
+                Key::Printable(key) => system_table
+                    .stdout()
+                    .write_str(&format!("{}", key))
                     .unwrap(),
-                )
-                .unwrap();
-            panic!("lol");
+                _ => {}
+            }
         }
-        Ok(proto) => {
-            let gp: &mut GraphicsOutput = unsafe { &mut *proto.get() };
-            gp.frame_buffer()
-        }
-    };
+    }
 
-    unsafe {
-        fb.write_byte(100, 0xAC);
-    };
-
-    loop {}
     //Status::SUCCESS
 }
 
