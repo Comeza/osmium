@@ -1,9 +1,0 @@
-[unstable]
-build-std = ["core", "compiler_builtins", "alloc"]
-build-std-features = ["compiler-builtins-mem"]
-
-[build]
-target = "x86_64-unknown-uefi"
-
-[target.x86_64-unknown-uefi]
-runner = "qemu-system-x86_64 -kernel target/x86_64-unknown-uefi/debug/os.efi -bios bin/OVMF-pure-efi.fd"

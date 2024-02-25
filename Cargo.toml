@@ -1,9 +1,21 @@
+[workspace]
+resolver = "2"
+members = [ "foundry" ]
+
 [package]
-name = "os"
-version = "0.1.0"
+name = "osmium"
+version = "0.0.1"
+authors = [ "Aaron Geiger <aaron@geigr.dev>" ]
 edition = "2021"
 
+[build]
+build-stage = 1
+target = ["x86_64-unknown-uefi"]
+
+[profile.dev]
+opt-level = 3
+
 [dependencies]
-lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
-spin = "0.9.3"
-uefi = { version = "0.16", features = ["logger", "alloc", "exts"] }
+log = "0.4.20"
+uefi = "0.26.0"
+uefi-services = "0.23.0"

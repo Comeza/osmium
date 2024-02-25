@@ -1,0 +1,10 @@
+[package]
+name = "foundry"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.5.1", features = ["derive"] }
+color-eyre = "0.6.2"
+locate-cargo-manifest = "0.2.2"
+ovmf-prebuilt = "0.1.0-alpha.1"

@@ -1,0 +1,12 @@
+[target.'cfg(all(target_arch = "x86_64", target_os="uefi"))']
+runner = "cargo run --package foundry --"
+
+[unstable.'cfg(all(target_arch = "x86_64", target_os="uefi"))']
+build-std = ["core", "compiler_builtins", "alloc"]
+build-std-features = ["compiler-builtins-mem"]
+
+[rust]
+lld = true
+
+[alias]
+run-x64 = "run --target=x86_64-unknown-uefi -- run"
